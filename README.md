@@ -176,3 +176,17 @@ curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"
 You can also point your browser to http://$GATEWAY_URL/productpage to view the Bookinfo web page. If you refresh the page several times, you should see different versions of reviews shown in productpage, presented in a round robin style (red stars, black stars, no stars), since we haven’t yet used Istio to control the version routing.
 
 ---
+
+### Define the service versions
+
+Before you can use Istio to control the Bookinfo version routing, you need to define the available versions.
+
+Unlike the Istio API, which uses DestinationRule subsets to define the versions of a service, the Kubernetes Gateway API uses backend service definitions for this purpose.
+
+Run the following command to create backend service definitions for the three versions of the reviews service:
+
+```shell
+k apply -f samples/bookinfo/platform/kube/bookinfo-versions.yaml
+```
+
+---
