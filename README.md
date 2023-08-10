@@ -6,7 +6,7 @@
 
 ## Istio Architecture
 
-[Istio Service Mesh Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)
+![Istio Service Mesh Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)
 
 ---
 
