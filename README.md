@@ -2,6 +2,14 @@
 
 [Istio Documentation](https://istio.io/latest/docs/examples/bookinfo/)
 
+---
+
+## Istio Architecture
+
+![Istio Service Mesh Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)
+
+---
+
 ## About the Application
 
 - This example deploys a sample application composed of four separate microservices used to demonstrate various Istio features.
@@ -21,15 +29,7 @@ There are 3 versions of the reviews microservice:
 2. Version v2 calls the ratings service, and displays each rating as 1 to 5 black stars.
 3. Version v3 calls the ratings service, and displays each rating as 1 to 5 red stars.
 
----
-
-## Istio Architecture
-
-![Istio Service Mesh Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)
-
----
-
-## Application Architecture
+### Application Architecture
 
 ![Application Architecture](https://istio.io/latest/docs/examples/bookinfo/withistio.svg)
 
