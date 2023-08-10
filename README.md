@@ -130,4 +130,37 @@ k exec "$(k get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c 
 
 ---
 
-#### Determine the ingress IP and port
+### Determine the ingress IP and port
+
+Now that the Bookinfo services are up and running, you need to make the application accessible from outside of your Kubernetes cluster, e.g., from a browser. A gateway is used for this purpose.
+
+#### Create a gateway for the Bookinfo application
+
+These instructions assume that your Kubernetes cluster supports external load balancers (i.e., Services of type LoadBalancer).
+
+Create a Kubernetes Gateway using the following command:
+
+```shell
+k apply -f https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/gateway-api/bookinfo-gateway.yaml
+```
+
+Because creating a Kubernetes Gateway resource will also deploy an associated proxy service, run the following command to wait for the gateway to be ready:
+
+```shell
+k wait --for=condition=programmed gtw bookinfo-gateway
+```
+
+Get the gateway address and port from the bookinfo gateway resource:
+
+```shell
+export INGRESS_HOST=$(k get gtw bookinfo-gateway -o jsonpath='{.status.addresses[0].value}')
+export INGRESS_PORT=$(k get gtw bookinfo-gateway -o jsonpath='{.spec.listeners[?(@.name=="http")].port}')
+```
+
+#### Set GATEWAY_URL
+
+```shell
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+```
+
+---
