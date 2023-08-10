@@ -117,3 +117,17 @@ k label namespace default istio-injection=enabled
 ```
 
 ---
+
+```shell
+k get all
+```
+
+To confirm that the Bookinfo application is running, send a request to it by a curl command from some pod, for example from ratings:
+
+```shell
+k exec "$(k get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c ratings -- curl -sS productpage:9080/productpage | grep -o "<title>.*</title>"
+```
+
+---
+
+#### Determine the ingress IP and port
