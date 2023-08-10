@@ -164,3 +164,15 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 ```
 
 ---
+
+### Confirm the app is accessible from outside the cluster
+
+To confirm that the Bookinfo application is accessible from outside the cluster, run the following curl command:
+
+```shell
+curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"
+```
+
+You can also point your browser to http://$GATEWAY_URL/productpage to view the Bookinfo web page. If you refresh the page several times, you should see different versions of reviews shown in productpage, presented in a round robin style (red stars, black stars, no stars), since we haven’t yet used Istio to control the version routing.
+
+---
