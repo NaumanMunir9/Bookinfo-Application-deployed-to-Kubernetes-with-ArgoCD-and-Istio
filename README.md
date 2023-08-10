@@ -6,7 +6,7 @@
 
 ## Istio Architecture
 
-![Istio Service Mesh Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)
+[Istio Service Mesh Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)
 
 ---
 
@@ -50,8 +50,8 @@ Please refer to the following github repo for setting up a local kubernetes envi
 ### Installing ArgoCD
 
 ```shell
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+k create namespace argocd
+k apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
 ```shell
@@ -96,8 +96,24 @@ Istio includes beta support for the Kubernetes Gateway API and intends to make i
 Note that the Kubernetes Gateway API CRDs do not come installed by default on most Kubernetes clusters, so make sure they are installed before using the Gateway API:
 
 ```shell
-kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || \
-  { kubectl kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v0.6.2" | kubectl apply -f -; }
+k get crd gateways.gateway.networking.k8s.io &> /dev/null || \
+  { k kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v0.6.2" | k apply -f -; }
+```
+
+---
+
+### Deploying the application
+
+To run the sample with Istio requires no changes to the application itself. Instead, you simply need to configure and run the services in an Istio-enabled environment, with Envoy sidecars injected along side each service. The resulting deployment will look like this:
+
+[Application with Istio](https://istio.io/latest/docs/examples/bookinfo/withistio.svg)
+
+All of the microservices will be packaged with an Envoy sidecar that intercepts incoming and outgoing calls for the services, providing the hooks needed to externally control, via the Istio control plane, routing, telemetry collection, and policy enforcement for the application as a whole.
+
+The default Istio installation uses automatic sidecar injection. Label the namespace that will host the application with istio-injection=enabled:
+
+```shell
+k label namespace default istio-injection=enabled
 ```
 
 ---
