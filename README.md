@@ -88,3 +88,16 @@ k -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}
 ```
 
 ---
+
+### Kubernetes Gateway API
+
+Istio includes beta support for the Kubernetes Gateway API and intends to make it the default API for traffic management in the future.
+
+Note that the Kubernetes Gateway API CRDs do not come installed by default on most Kubernetes clusters, so make sure they are installed before using the Gateway API:
+
+```shell
+kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || \
+  { kubectl kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v0.6.2" | kubectl apply -f -; }
+```
+
+---
