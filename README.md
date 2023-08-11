@@ -89,15 +89,22 @@ k -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}
 
 ---
 
-### Kubernetes Gateway API
-
-Istio includes beta support for the Kubernetes Gateway API and intends to make it the default API for traffic management in the future.
-
-Note that the Kubernetes Gateway API CRDs do not come installed by default on most Kubernetes clusters, so make sure they are installed before using the Gateway API:
+### Intall Istioctl
 
 ```shell
-k get crd gateways.gateway.networking.k8s.io &> /dev/null || \
-  { k kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v0.6.2" | k apply -f -; }
+brew install istioctl
+```
+
+---
+
+### Getting Started
+
+#### "Demo" configuration profile for Istio
+
+For this application, we use the demo [configuration profile](https://istio.io/latest/docs/setup/additional-setup/config-profiles/). It’s selected to have a good set of defaults for testing, but there are other profiles for production or performance testing.
+
+```shell
+istioctl install --set profile=demo -y
 ```
 
 ---
@@ -110,10 +117,22 @@ To run the sample with Istio requires no changes to the application itself. Inst
 
 All of the microservices will be packaged with an Envoy sidecar that intercepts incoming and outgoing calls for the services, providing the hooks needed to externally control, via the Istio control plane, routing, telemetry collection, and policy enforcement for the application as a whole.
 
-The default Istio installation uses automatic sidecar injection. Label the namespace that will host the application with istio-injection=enabled:
+The default Istio installation uses automatic sidecar injection. Label the namespace that will host the application with istio-injection=enabled.
+
+Add a namespace label to instruct Istio to automatically inject Envoy sidecar proxies when you deploy your application later.
 
 ```shell
 k label namespace default istio-injection=enabled
+```
+
+---
+
+### Deploy the sample application
+
+We will deploy our application in ArgoCD
+
+```shell
+k apply -f https://raw.githubusercontent.com/istio/istio/release-1.18/samples/bookinfo/platform/kube/bookinfo.yaml
 ```
 
 ---
@@ -130,63 +149,20 @@ k exec "$(k get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c 
 
 ---
 
-### Determine the ingress IP and port
+### Open the application to outside traffic
 
-Now that the Bookinfo services are up and running, you need to make the application accessible from outside of your Kubernetes cluster, e.g., from a browser. A gateway is used for this purpose.
+The Bookinfo application is deployed but not accessible from the outside. To make it accessible, you need to create an Istio Ingress Gateway, which maps a path to a route at the edge of your mesh.
 
-#### Create a gateway for the Bookinfo application
-
-These instructions assume that your Kubernetes cluster supports external load balancers (i.e., Services of type LoadBalancer).
-
-Create a Kubernetes Gateway using the following command:
+#### Associate this application with the Istio gateway:
 
 ```shell
-k apply -f https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/gateway-api/bookinfo-gateway.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.18/samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
 
-Because creating a Kubernetes Gateway resource will also deploy an associated proxy service, run the following command to wait for the gateway to be ready:
+#### Ensure that there are no issues with the configuration
 
 ```shell
-k wait --for=condition=programmed gtw bookinfo-gateway
-```
-
-Get the gateway address and port from the bookinfo gateway resource:
-
-```shell
-export INGRESS_HOST=$(k get gtw bookinfo-gateway -o jsonpath='{.status.addresses[0].value}')
-export INGRESS_PORT=$(k get gtw bookinfo-gateway -o jsonpath='{.spec.listeners[?(@.name=="http")].port}')
-```
-
-#### Set GATEWAY_URL
-
-```shell
-export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
-```
-
----
-
-### Confirm the app is accessible from outside the cluster
-
-To confirm that the Bookinfo application is accessible from outside the cluster, run the following curl command:
-
-```shell
-curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"
-```
-
-You can also point your browser to http://$GATEWAY_URL/productpage to view the Bookinfo web page. If you refresh the page several times, you should see different versions of reviews shown in productpage, presented in a round robin style (red stars, black stars, no stars), since we haven’t yet used Istio to control the version routing.
-
----
-
-### Define the service versions
-
-Before you can use Istio to control the Bookinfo version routing, you need to define the available versions.
-
-Unlike the Istio API, which uses DestinationRule subsets to define the versions of a service, the Kubernetes Gateway API uses backend service definitions for this purpose.
-
-Run the following command to create backend service definitions for the three versions of the reviews service:
-
-```shell
-k apply -f samples/bookinfo/platform/kube/bookinfo-versions.yaml
+istioctl analyze
 ```
 
 ---
