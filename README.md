@@ -227,8 +227,8 @@ Use the following instructions to deploy the Kiali dashboard, along with Prometh
 
 #### Install Kiali and the other addons
 
-```shell
-kubectl apply -f /istio-sample-addons
+```she
+kubectl apply -f istio-sample-addons/
 kubectl rollout status deployment/kiali -n istio-system
 ```
 
