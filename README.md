@@ -239,3 +239,15 @@ istioctl dashboard kiali
 ```
 
 ---
+
+### k6 - open-source load testing tool
+
+[Grafana k6](https://k6.io/docs/) is an open-source load testing tool that makes performance testing easy and productive for engineering teams. k6 is free, developer-centric, and extensible.
+
+Using k6, you can test the reliability and performance of your systems and catch performance regressions and problems earlier. k6 will help you to build resilient and performant applications that scale.
+
+```shell
+k6 run average-load.js
+```
+
+---
