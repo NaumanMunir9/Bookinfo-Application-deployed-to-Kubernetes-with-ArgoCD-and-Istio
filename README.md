@@ -166,3 +166,41 @@ istioctl analyze
 ```
 
 ---
+
+### Determining the ingress IP and ports
+
+#### Set the ingress host and ports
+
+```shell
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+```
+
+#### Ensure an IP address and ports were successfully assigned to each environment variable
+
+```shell
+echo "$INGRESS_HOST"
+```
+
+```shell
+echo "$INGRESS_PORT"
+```
+
+```shell
+echo "$SECURE_INGRESS_PORT"
+```
+
+#### Set GATEWAY_URL
+
+```shell
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+```
+
+#### Ensure an IP address and port were successfully assigned to the environment variable
+
+```shell
+echo "$GATEWAY_URL"
+```
+
+---
