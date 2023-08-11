@@ -1,6 +1,6 @@
 # Bookinfo Application deployed to Kubernetes with ArgoCD and Istio
 
-[Istio Documentation](https://istio.io/latest/docs/examples/bookinfo/)
+[Istio Documentation](https://istio.io/latest/docs/)
 
 ---
 
