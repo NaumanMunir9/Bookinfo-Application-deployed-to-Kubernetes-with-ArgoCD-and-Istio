@@ -204,3 +204,17 @@ echo "$GATEWAY_URL"
 ```
 
 ---
+
+### Verify external access
+
+Confirm that the Bookinfo application is accessible from outside by viewing the Bookinfo product page using a browser.
+
+Run the following command to retrieve the external address of the Bookinfo application
+
+```shell
+echo "http://$GATEWAY_URL/productpage"
+```
+
+Paste the output from the previous command into your web browser and confirm that the Bookinfo product page is displayed.
+
+---
