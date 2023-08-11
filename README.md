@@ -246,6 +246,8 @@ istioctl dashboard kiali
 
 Using k6, you can test the reliability and performance of your systems and catch performance regressions and problems earlier. k6 will help you to build resilient and performant applications that scale.
 
+#### Paste the following code in a file named "average-load.js"
+
 ```js
 import http from 'k6/http';
 
